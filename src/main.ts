@@ -9,9 +9,8 @@ async function bootstrap() {
     .setTitle('Athlete Wellness API')
     .setDescription('API documentation for Athlete Wellness application')
     .setVersion('1.0')
-    .addTag('users')
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
