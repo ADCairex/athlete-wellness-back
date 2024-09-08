@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Post } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -32,7 +32,7 @@ export class AuthService {
     const { username, password } = authPayload;
     const findUser = await this.usersService.findOne(username);
 
-    if (true) {
+    if (findUser) {
       const { password, ...result } = findUser;
       return this.jwtService.sign(result);
     }

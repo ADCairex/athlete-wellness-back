@@ -1,10 +1,8 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
-import { LocalGuard } from './guards/local.guard';
-import { Request } from 'express';
-import { JwtAuthGuard } from './guards/jwt.guard';
+import { Request, Response } from 'express';
 import { LoginUserDto } from './dto/loginUser.dto';
 
 @Controller('auth')
@@ -18,13 +16,15 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(LocalGuard)
-  login(@Req() req: Request, @Body() authPayload: LoginUserDto) {
-    return req.user;
+  async login(@Res() res: Response, @Body() authPayload: LoginUserDto) {
+    const token = await this.authService.validateUser(authPayload);
+    if (!token) {
+      res.status(401).send('Invalid credentials');
+    }
+    res.setHeader('Authorization', token).status(200).send({ token });
   }
 
   @Get('status')
-  @UseGuards(JwtAuthGuard)
   status(@Req() req: Request) {
     return req.user;
   }
